@@ -12,7 +12,7 @@ Scripts in this repository will utilise [Docker](https://www.docker.com) contain
 - Prepare the Environment
   - Initialise a BOSH Director
     - Azure Account (Create/Use)
-    - Azure Service Principal
+    - [Azure Service Principal](docs/azure-service-principal.md)
       - [Create a Service Principal - Azure CLI](https://github.com/cloudfoundry-incubator/bosh-azure-cpi-release/blob/master/docs/get-started/create-service-principal.md)
   - Set up bosh Cloud Config
   - Upload the stemcell
