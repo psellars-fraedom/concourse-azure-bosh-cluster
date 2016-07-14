@@ -12,7 +12,7 @@ call dm_config.bat
 
 del dm_config.bat
 
-REM ENABLE_LATER docker run -it microsoft/azure-cli azure login --environment AzureCloud
+docker run -it microsoft/azure-cli azure login --environment AzureCloud
 docker ps -l -q > cid.txt
 set /p AZURECLI_CID= < cid.txt
 del cid.txt
@@ -34,20 +34,19 @@ echo SUBSCRIPTION-ID: %SUBSCRIPTION-ID%
 echo TENANT_ID: %TENANT_ID%
 
 docker exec %AZURECLI_CID% azure account set %SUBSCRIPTION-ID%
-REM ENABLE_LATER docker exec %AZURECLI_CID% azure ad app create --name "My Service Principal for BOSH" --password "password" --home-page "http://MyBOSHAzureCPI" --identifier-uris "http://MyBOSHAzureCPI" --json > ad_app.json
+docker exec %AZURECLI_CID% azure ad app create --name "My Service Principal for BOSH" --password "password" --home-page "http://MyBOSHAzureCPI" --identifier-uris "http://MyBOSHAzureCPI" --json > ad_app.json
 docker exec %AZURECLI_CID% azure ad app list
 for /f "tokens=1,2 delims=:, " %%a in (' find ":" ^< "ad_app.json" ') do (
   set "%%~a=%%~b"
 )
-REM del ad_app.json
+del ad_app.json
 set CLIENT_ID=%appId%
 echo CLIENT_ID: %CLIENT_ID%
 
-REM docker exec %AZURECLI_CID% azure ad sp create %CLIENT_ID% --json > principal.json
-REM del principal.json
+docker exec %AZURECLI_CID% azure ad sp create %CLIENT_ID% 
 
-REM docker exec %AZURECLI_CID% azure role assignment create --spn %CLIENT_ID% --roleName "Virtual Machine Contributor" --subscription %SUBSCRIPTION-ID%
-REM docker exec %AZURECLI_CID% azure role assignment create --spn %CLIENT_ID% --roleName "Network Contributor" --subscription %SUBSCRIPTION-ID%
+docker exec %AZURECLI_CID% azure role assignment create --spn %CLIENT_ID% --roleName "Virtual Machine Contributor" --subscription %SUBSCRIPTION-ID%
+docker exec %AZURECLI_CID% azure role assignment create --spn %CLIENT_ID% --roleName "Network Contributor" --subscription %SUBSCRIPTION-ID%
 docker exec %AZURECLI_CID% azure role assignment list --spn %CLIENT_ID%
 
 docker exec %AZURECLI_CID% azure login --username %CLIENT_ID% --password "password" --service-principal --tenant %TENANT_ID% --environment AzureCloud
